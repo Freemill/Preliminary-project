@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,19 +29,37 @@ public class HomeController {
 		String id=request.getParameter("id");
 		String pw=request.getParameter("pw");		
 		
+		JSONObject json=new JSONObject();
 		try {
 			MemberVO m=new MemberVO(id,pw); 
 			String name=memberService.login(m);
 			if(name!=null) {
 				HttpSession session=request.getSession();
 				session.setAttribute("member", m);
-				return id+"님의 Sparking Story";
+			
+				json.put("name", name);
+				
 			}else {
-				return "로그인 실패";
+				json.put("msg", "로그인 실패");
 			}
 		}catch(Exception e) {
-			return e.getMessage();
-		}		
+			json.put("msg", e.getMessage());		
+		}
+		return json.toJSONString();
+	}
+	
+	
+	@RequestMapping(value = "logout.sms", 
+			method= {RequestMethod.POST},
+			produces = "application/text; charset=utf8")			
+	@ResponseBody
+	public String logout(HttpServletRequest request,
+			HttpServletResponse response){
+		
+			HttpSession session=request.getSession(false);
+			session.invalidate();
+			return "";
+		
 	}
 
 	 

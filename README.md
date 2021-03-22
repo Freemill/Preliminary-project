@@ -80,4 +80,15 @@
    Edit my.js
    ```
 
+
+
+
+
+
+## 4. UI 추가
+
+1. ```
+   Add the chat page and the lower half of the ui.
+   ```
+
    
